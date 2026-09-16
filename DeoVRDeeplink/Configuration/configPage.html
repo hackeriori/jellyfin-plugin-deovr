@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DeoVR Deeplink</title>
+    <style>
+        /* Align library controls in a clean row */
+        .listItemBody {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .lib-options {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .listItem {
+            padding: 12px;
+            border-bottom: 1px solid var(--theme-border-color, #444);
+        }
+
+        .listItem h3 {
+            margin: 0 0 6px 0;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+<div id="DeoVRDeeplinkConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox,emby-collapse,emby-textarea">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="DeoVRDeeplinkConfigForm">
+                <!-- IP Restriction Settings -->
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">IP Restriction</h2>
+
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label class="emby-checkbox-label">
+                            <input id="EnableIpRestriction" name="EnableIpRestriction" type="checkbox" is="emby-checkbox" />
+                            <span>Enable IP restriction</span>
+                        </label>
+                        <div class="fieldDescription">Restrict access to DeoVR endpoints based on IP addresses</div>
+                    </div>
+
+                    <div id="ipRangesContainer" class="inputContainer hide">
+                        <div class="inputContainer">
+                            <label class="inputLabel inputLabelUnfocused" for="AllowedIpRanges">Allowed IP Ranges</label>
+                            <div class="fieldDescription" style="margin-bottom: 0.5em;">
+                                Enter one CIDR IP range per line:<br>
+                                • For specific IPs: <code>192.168.1.10/32</code><br>
+                                • For subnets: <code>192.168.1.0/24</code><br>
+                                • For local network: <code>10.0.0.0/8</code> or <code>172.16.0.0/12</code><br>
+                                • For localhost: <code>127.0.0.1/32</code> and <code>::1/128</code>
+                            </div>
+                            <textarea id="AllowedIpRanges" name="AllowedIpRanges" is="emby-textarea"
+                                      class="emby-textarea" rows="4" style="font-family: monospace; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Library Settings -->
+                <div class="verticalSection">
+                    <h2 class="sectionTitle">Library Settings</h2>
+                    <div id="librarySettingsList" class="paperList"></div>
+                </div>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var DeoVRDeeplinkConfig = {
+            pluginUniqueId: 'e7bea589-e339-490c-8738-596e42b9042e'
+        };
+
+        document.querySelector('#DeoVRDeeplinkConfigPage')
+            .addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+
+                ApiClient.getPluginConfiguration(DeoVRDeeplinkConfig.pluginUniqueId).then(function (config) {
+                    // Load top-level config
+                    document.querySelector('#EnableIpRestriction').checked = config.EnableIpRestriction || false;
+                    document.querySelector('#ipRangesContainer').classList.toggle('hide', !config.EnableIpRestriction);
+                    document.querySelector('#AllowedIpRanges').value = (config.AllowedIpRanges || []).join('\n');
+
+                    // Load library-specific configs
+                    ApiClient.getUserViews().then(function (result) {
+                        var list = document.getElementById("librarySettingsList");
+                        list.innerHTML = '';
+
+                        var movieLibraries = result.Items.filter(function (v) { return v.CollectionType === 'movies'; });
+
+                        movieLibraries.forEach(function (view) {
+                            var cfg = (config.Libraries || []).find(function (lib) { return lib.Id === view.Id; }) || {};
+
+                            var item = document.createElement('div');
+                            item.className = 'listItem';
+
+                            // Title
+                            var titleWrap = document.createElement('div');
+                            var h3 = document.createElement('h3');
+                            h3.textContent = view.Name;
+                            titleWrap.appendChild(h3);
+                            item.appendChild(titleWrap);
+
+                            // Controls
+                            var controls = document.createElement('div');
+                            controls.className = 'listItemBody';
+
+                            // Enabled checkbox
+                            var enabledChecked = cfg.Enabled ? ' checked' : '';
+                            var enabledHtml =
+                                '<label class="emby-checkbox-label">' +
+                                '<input type="checkbox" class="lib-enabled" data-id="' + view.Id + '" is="emby-checkbox"' + enabledChecked + '>' +
+                                '<span>Enabled</span>' +
+                                '</label>';
+                            controls.innerHTML = enabledHtml;
+
+                            // Options wrapper (hidden if not enabled)
+                            var options = document.createElement('div');
+                            options.className = 'lib-options';
+                            if (!cfg.Enabled) options.style.display = 'none';
+
+                            // Sort By dropdown
+                            options.innerHTML +=
+                                '<label>' +
+                                'Sort By: ' +
+                                '<select class="lib-sortby" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="Name">Name</option>' +
+                                '<option value="Random">Random</option>' +
+                                '<option value="DateAdded">Date Added</option>' +
+                                '<option value="ReleaseDate">Release Date</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            // Sort Order dropdown
+                            options.innerHTML +=
+                                '<label>' +
+                                'Sort Order: ' +
+                                '<select class="lib-sortorder" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="Ascending">Ascending</option>' +
+                                '<option value="Descending">Descending</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            // Timeline Images checkbox
+                            var timelineChecked = cfg.TimelineImages ? ' checked' : '';
+                            options.innerHTML +=
+                                '<label class="emby-checkbox-label">' +
+                                '<input type="checkbox" class="lib-timeline" data-id="' + view.Id + '" is="emby-checkbox"' + timelineChecked + '>' +
+                                '<span>Timeline Images</span>' +
+                                '</label>';
+
+                            // Forced Projection select
+                            options.innerHTML +=
+                                '<label>' +
+                                'Forced Projection: ' +
+                                '<select class="lib-forced-projection" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="None">Auto (No force)</option>' +
+                                '<option value="Projection180">180-degree</option>' +
+                                '<option value="Projection360">360-degree</option>' +
+                                '<option value="Flat">Flat</option>' +
+                                '<option value="Fisheye">Fisheye 180°</option>' +
+                                '<option value="Fisheye190">Fisheye 190° (RF52)</option>' +
+                                '<option value="Fisheye200">Fisheye 200° (MKX200)</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            // Forced Stereo select
+                            options.innerHTML +=
+                                '<label>' +
+                                'Forced Stereo: ' +
+                                '<select class="lib-forced-stereo" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="None">Auto (No force)</option>' +
+                                '<option value="SideBySide">Side by Side</option>' +
+                                '<option value="TopBottom">Top Bottom</option>' +
+                                '<option value="Off">2D (Off)</option>' +
+                                '<option value="CustomUV">Custom UV</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            // Fallback Projection select
+                            options.innerHTML +=
+                                '<label>' +
+                                'Fallback Projection: ' +
+                                '<select class="lib-projection" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="None">None (Default Flat)</option>' +
+                                '<option value="Projection180">180-degree</option>' +
+                                '<option value="Projection360">360-degree</option>' +
+                                '<option value="Flat">Flat</option>' +
+                                '<option value="Fisheye">Fisheye 180°</option>' +
+                                '<option value="Fisheye190">Fisheye 190° (RF52)</option>' +
+                                '<option value="Fisheye200">Fisheye 200° (MKX200)</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            // Fallback Stereo select
+                            options.innerHTML +=
+                                '<label>' +
+                                'Fallback Stereo: ' +
+                                '<select class="lib-stereo" data-id="' + view.Id + '" is="emby-select">' +
+                                '<option value="None">None (Default 2D Off)</option>' +
+                                '<option value="SideBySide">Side by Side</option>' +
+                                '<option value="TopBottom">Top Bottom</option>' +
+                                '<option value="Off">2D (Off)</option>' +
+                                '<option value="CustomUV">Custom UV</option>' +
+                                '</select>' +
+                                '</label>';
+
+                            controls.appendChild(options);
+                            item.appendChild(controls);
+                            list.appendChild(item);
+
+                            // Set dropdown values
+                            item.querySelector('.lib-sortby').value = cfg.SortBy || 'Name';
+                            item.querySelector('.lib-sortorder').value = cfg.SortOrder || 'Descending';
+
+                            item.querySelector('.lib-forced-projection').value = cfg.ForcedProjection || 'None';
+                            item.querySelector('.lib-forced-stereo').value = cfg.ForcedStereoMode || 'None';
+                            item.querySelector('.lib-projection').value = cfg.FallbackProjection || 'None';
+                            item.querySelector('.lib-stereo').value = cfg.FallbackStereoMode || 'None';
+
+                            // Add toggle logic
+                            var enabledBox = item.querySelector('.lib-enabled');
+                            enabledBox.addEventListener('change', function () {
+                                options.style.display = enabledBox.checked ? '' : 'none';
+                            });
+                        });
+                    }).catch(console.error);
+
+                    Dashboard.hideLoadingMsg();
+                });
+
+                document.querySelector('#EnableIpRestriction').addEventListener('change', function (e) {
+                    document.querySelector('#ipRangesContainer').classList.toggle('hide', !e.target.checked);
+                });
+            });
+
+        document.querySelector('#DeoVRDeeplinkConfigForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            Dashboard.showLoadingMsg();
+
+            ApiClient.getPluginConfiguration(DeoVRDeeplinkConfig.pluginUniqueId).then(function (config) {
+                config.EnableIpRestriction = document.querySelector('#EnableIpRestriction').checked;
+                config.AllowedIpRanges = document.querySelector('#AllowedIpRanges').value.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l; });
+
+                // Collect per-library configs
+                var libs = [];
+                var enabledBoxes = document.querySelectorAll('.lib-enabled');
+
+                enabledBoxes.forEach(function (enabledCheckbox) {
+                    var id = enabledCheckbox.dataset.id;
+
+                    var sortBySelect = document.querySelector('.lib-sortby[data-id="' + id + '"]');
+                    var sortOrderSelect = document.querySelector('.lib-sortorder[data-id="' + id + '"]');
+                    var timelineCheckbox = document.querySelector('.lib-timeline[data-id="' + id + '"]');
+                    var forcedProjectionSelect = document.querySelector('.lib-forced-projection[data-id="' + id + '"]');
+                    var forcedStereoSelect = document.querySelector('.lib-forced-stereo[data-id="' + id + '"]');
+                    var projectionSelect = document.querySelector('.lib-projection[data-id="' + id + '"]');
+                    var stereoSelect = document.querySelector('.lib-stereo[data-id="' + id + '"]');
+
+                    libs.push({
+                        Id: id,
+                        Name: '',
+                        Enabled: enabledCheckbox.checked,
+                        SortBy: sortBySelect ? sortBySelect.value : 'Name',
+                        SortOrder: sortOrderSelect ? sortOrderSelect.value : 'Descending',
+                        TimelineImages: timelineCheckbox ? timelineCheckbox.checked : false,
+                        ForcedProjection: forcedProjectionSelect ? forcedProjectionSelect.value : 'None',
+                        ForcedStereoMode: forcedStereoSelect ? forcedStereoSelect.value : 'None',
+                        FallbackProjection: projectionSelect ? projectionSelect.value : 'None',
+                        FallbackStereoMode: stereoSelect ? stereoSelect.value : 'None'
+                    });
+                });
+
+                config.Libraries = libs;
+
+                ApiClient.updatePluginConfiguration(DeoVRDeeplinkConfig.pluginUniqueId, config)
+                    .then(Dashboard.processPluginConfigurationUpdateResult);
+            });
+
+            return false;
+        });
+    </script>
+</div>
+</body>
+</html>

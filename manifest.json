@@ -1,0 +1,148 @@
+[
+    {
+        "guid": "e7bea589-e339-490c-8738-596e42b9042e",
+        "name": "DeoVRDeeplink",
+        "overview": "Adds a Play in DeoVR button.",
+        "description": "Adds a Play in DeoVR button.",
+        "owner": "toastyice",
+        "category": "General",
+        "versions": [
+            {
+                "version": "1.0.0.0",
+                "changelog": "Initial release",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v1.0.0.0/DeoVRDeeplink-v1.0.0.zip",
+                "checksum": "701c52141867eda77289153a49d9e4bf",
+                "timestamp": "2025-06-07T18:12:00Z"
+            },
+            {
+                "version": "1.1.0.0",
+                "changelog": "Removed Jellyfin ApiKey requirement",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v1.1.0.0/DeoVRDeeplink-v1.1.0.0.zip",
+                "checksum": "ce17e8470f0ea30907ffdeedb2f0a415",
+                "timestamp": "2025-06-08T07:12:00Z"
+            },
+            {
+                "version": "1.2.0.0",
+                "changelog": "Refactor, allow browsing, add timeline",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v1.2.0.0/DeoVRDeeplink-v1.2.0.0.zip",
+                "checksum": "de3bf31784f2bf54abb5bcb0469b3f8d",
+                "timestamp": "2025-06-11T20:20:00Z"
+            },
+            {
+                "version": "1.2.1.0",
+                "changelog": "Timeline support multiple VR modes, Experimental Add TimelineRemoveDistortion",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v1.2.1.0/DeoVRDeeplink-v1.2.1.0.zip",
+                "checksum": "f1bc73b88bcae324003aee555b94a2ce",
+                "timestamp": "2025-06-12T16:08:00Z"
+            },
+            {
+                "version": "1.2.2.0",
+                "changelog": "json Add repose for persons",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v1.2.2.0/DeoVRDeeplink-v1.2.2.0.zip",
+                "checksum": "7bc288d8d3e08c549d556f8ba7057623",
+                "timestamp": "2025-06-13T06:38:00Z"
+            },
+            {
+                "version": "2.0.0.0",
+                "changelog": "Breaking change save timeline images in data dir",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.0.0.0/DeoVRDeeplink-v2.0.0.0.zip",
+                "checksum": "eaf46fc235bcb078eb09ebdad8ef6429",
+                "timestamp": "2025-06-23T15:34:00Z"
+            },
+            {
+                "version": "2.1.0.0",
+                "changelog": "Add per library settings",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.1.0.0/DeoVRDeeplink-v2.1.0.0.zip",
+                "checksum": "1ffc36f7df87a39824c96be9ece0d55d",
+                "timestamp": "2025-08-20T13:34:00Z"
+            },
+            {
+                "version": "2.2.0.0",
+                "changelog": "Add remove invalid/stale timeline images",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.0.0/DeoVRDeeplink-v2.2.0.0.zip",
+                "checksum": "6698c2f213bdc43cef06540f9e26b40a",
+                "timestamp": "2025-08-24T11:47:00Z"
+            },
+            {
+                "version": "2.2.1.0",
+                "changelog": "Add support for movies with alternative versions",
+                "targetAbi": "10.10.7.0",
+                "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.1.0/DeoVRDeeplink-v2.2.1.0.zip",
+                "checksum": "3fbde586d9b38151c938e733bac4b947",
+                "timestamp": "2025-08-28T16:15:00Z"
+            },
+            {
+              "version": "2.2.2.0",
+              "changelog": "Timelineimage generation use library fallback setting when 3D mode is not configured",
+              "targetAbi": "10.10.7.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.2.0/DeoVRDeeplink-v2.2.2.0.zip",
+              "checksum": "fc3acdbcf3670a4f1d9c3978e51b5863",
+              "timestamp": "2025-09-04T06:27:00Z"
+            },
+            {
+              "version": "2.2.3.0",
+              "changelog": "ThumbnailUrl fallback to Primary if Backdrop doesn't exist",
+              "targetAbi": "10.10.7.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.3.0/DeoVRDeeplink-v2.2.3.0.zip",
+              "checksum": "21fe7b05bb6921aaab0a169b26e8a439",
+              "timestamp": "2025-09-09T05:50:00Z"
+            },
+            {
+              "version": "2.2.4.0",
+              "changelog": "ThumbnailUrl always downscale",
+              "targetAbi": "10.10.7.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.4.0/DeoVRDeeplink-v2.2.4.0.zip",
+              "checksum": "6872e9238898644a58c867cdfa3b600d",
+              "timestamp": "2025-09-13T09:56:00Z"
+            },
+            {
+              "version": "2.2.5.0",
+              "changelog": "Timelineroute inline image",
+              "targetAbi": "10.10.7.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.2.5.0/DeoVRDeeplink-v2.2.5.0.zip",
+              "checksum": "3f6ffb3c9cf7f703b32d82ae125cb4c7",
+              "timestamp": "2025-09-23T06:20:00Z"
+            },
+            {
+              "version": "2.3.0.0",
+              "changelog": "Add per library sorting",
+              "targetAbi": "10.10.7.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v2.3.0.0/DeoVRDeeplink-v2.3.0.0.zip",
+              "checksum": "bdc81fa0ea480043504f62b0303d77b7",
+              "timestamp": "2025-09-27T09:20:00Z"
+            },
+            {
+              "version": "3.0.0.0",
+              "changelog": "Jellyfin 10.11.0 support",
+              "targetAbi": "10.11.0.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v3.0.0.0/DeoVRDeeplink-v3.0.0.0.zip",
+              "checksum": "63d6231ef5d5ba30263b35ff40d09a3d",
+              "timestamp": "2025-10-20T15:44:00Z"
+            },
+            {
+              "version": "3.0.1.0",
+              "changelog": "Support protocol detection in a reverse proxy environment",
+              "targetAbi": "10.11.0.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v3.0.1.0/DeoVRDeeplink-v3.0.1.0.zip",
+              "checksum": "16c55940512fdbcce773db751e9e7bfd",
+              "timestamp": "2025-11-11T06:46:00Z"
+            },
+            {
+              "version": "4.0.0.0",
+              "changelog": "Jellyfin 12.0.0 support",
+              "targetAbi": "12.0.0.0",
+              "sourceUrl": "https://github.com/Toastyice/DeoVRDeeplink/releases/download/v4.0.0.0/DeoVRDeeplink-v4.0.0.0.zip",
+              "checksum": "3e95bc80ad6b66b9eff472cbf8c4c26e",
+              "timestamp": "2026-09-10T09:30:00Z"
+            }
+        ]
+    }
+]
