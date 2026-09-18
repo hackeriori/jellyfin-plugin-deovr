@@ -27,7 +27,7 @@
 
 ---
 
-## 🛠️ 安装与准备 (Getting Started)
+## 🛠️ 安装与准备
 
 ### 前置要求
 
@@ -41,13 +41,12 @@
    ```text
    https://raw.githubusercontent.com/hackeriori/jellyfin-plugin-deovr/main/manifest.json
    ```
-   *(或使用上游仓库的 manifest 地址)*
 3. 在“目录”中找到 **JellyfinPluginDeoVR** 插件并点击安装。
 4. 重启 Jellyfin 服务器以使插件生效。
 
 ---
 
-## ⚙️ 插件配置 (Configuration)
+## ⚙️ 插件配置
 
 在 Jellyfin 控制台菜单中进入 **控制台 → 插件 → JellyfinPluginDeoVR** 进行配置：
 
@@ -66,15 +65,15 @@
 
 插件内置了智能格式探测器，能够自动区分传统的平面 3D 电影、VR 等距柱状投影（180°/360°）、鱼眼镜头格式以及常规 2D 视频。
 
-### 识别优先级层级 (Detection Priority Hierarchy)
+### 识别优先级层级
 
 格式判断按以下从高到低的优先级顺序进行解析：
-1. **项目元数据标签 (Item Tags，最高优先级)**：在 Jellyfin 中为视频编辑填写的标签。
-2. **媒体库强制配置 (Library Forced Settings)**：在插件设置中为整个媒体库指定的强制投影/立体模式。
-3. **文件名命名规范 (Filename Conventions)**：根据视频文件名自动正则解析。
-4. **Jellyfin 原生 3D 元数据 (Jellyfin Scanned 3D Metadata)**：Jellyfin 扫描到的 `Video3DFormat`（如标准 `.3D.hsbs` 压制片默认映射为平面 3D 巨幕，不会变形）。
-5. **媒体库保底配置 (Library Fallback Settings)**：在插件设置中为媒体库指定的保底模式。
-6. **全局默认 (Global Default)**：常规 2D 平面视频（`screenType: flat`, `stereoMode: off`, `is3d: false`）。
+1. **项目元数据标签**：在 Jellyfin 中为视频编辑填写的标签。
+2. **媒体库强制配置**：在插件设置中为整个媒体库指定的强制投影/立体模式。
+3. **文件名命名规范**：根据视频文件名自动正则解析。
+4. **Jellyfin 原生 3D 元数据**：Jellyfin 扫描到的 `Video3DFormat`（如标准 `.3D.hsbs` 压制片默认映射为平面 3D 巨幕，不会变形）。
+5. **媒体库保底配置**：在插件设置中为媒体库指定的保底模式。
+6. **全局默认**：常规 2D 平面视频（`screenType: flat`, `stereoMode: off`, `is3d: false`）。
 
 ---
 
@@ -123,8 +122,8 @@
 
 如果您无法修改文件名（例如 PT 做种或依赖严格刮削的文件），可以直接在 Jellyfin 中打标签覆盖：
 
-1. 在 Jellyfin 网页端中，点击视频卡片上的 **`...`（更多选项）**，选择 **修改元数据（Edit Metadata）**。
-2. 找到 **标签（Tags）** 字段，添加相应的标签：
+1. 在 Jellyfin 网页端中，点击视频卡片上的 **`...`（更多选项）**，选择 **修改元数据**。
+2. 找到 **标签** 字段，添加相应的标签：
    - **投影类型标签**：`VR180`（或 `dome`）、`VR360`（或 `sphere`）、`Fisheye`、`Fisheye190`（或 `RF52`）、`MKX200`、`Flat`
    - **立体模式标签**：`SBS`、`TB`、`2D`（或 `Mono`）、`CUV`
    - **带前缀标签（可选）**：`deovr:dome`、`deovr:sphere`、`deovr:fisheye`、`deovr:rf52`、`deovr:mkx200`、`deovr:sbs`、`deovr:tb`、`deovr:off`
@@ -152,25 +151,13 @@
 
 ---
 
-## 🔒 安全性 (Security)
+## 🔒 安全性
 
 - **HMAC 临时签名令牌**：所有视频流请求链接均受动态 HMAC 密钥签名保护。
 - **防盗链与防篡改**：链接具有防重放与过期限制，过期后自动失效。
 - **服务端私钥保护**：签名密钥存储于服务器端，绝不泄露给客户端。
 - **自适应有效时长**：视频流签名的有效期限动态设置为电影时长的两倍。
 - **CIDR IP 白名单**：除前端注入脚本和图标外，所有 API 接口均支持 IP 白名单访问过滤。
-
----
-
-## 🔌 高级端点 (Endpoints)
-
-插件在 Jellyfin 中注册了以下路由端点：
-- `/deovr`：DeoVR 浏览入口页面
-- `/deovr/ClientScript`：注入 Jellyfin Web 前端的脚本文件
-- `/deovr/Icon`：DeoVR 图标资源
-- `/deovr/json/{MovieUUID}/response.json`：单个影片的 DeoVR 格式元数据响应
-- `/deovr/proxy/{MovieUUID}/{mediaSourceId}/{Expiry}/{Signature}/stream.mp4`：HMAC 鉴权保护的视频代理流
-- `/deovr/timeline/{MovieUUID}/4096_timelinePreview341x195.jpg`：视频时间线预览雪碧图
 
 ---
 
@@ -192,7 +179,7 @@ dotnet build -c Release
 
 ---
 
-## ❓ 常见问题与故障排查 (Troubleshooting)
+## ❓ 常见问题与故障排查
 
 ### 1. Jellyfin 网页端看不到“Play in DeoVR”按钮
 
@@ -220,12 +207,11 @@ docker exec -it --user root jellyfin chown user:group /jellyfin/jellyfin-web/ind
 
 ---
 
-## 💖 鸣谢与致敬 (Credits)
+## 💖 鸣谢与致敬
 
 - 本项目由 [Toastyice/DeoVRDeeplink](https://github.com/Toastyice/DeoVRDeeplink) 衍生并深度改造升级而来，在此向原作者致以崇高的敬意！
 - [Jellyfin Media Server](https://jellyfin.org/) - 优秀的开源流媒体服务器。
 - [DeoVR](https://deovr.com/) - 极致体验的专业 VR 播放器。
-- [InPlayerEpisodePreview](https://github.com/Namo2/InPlayerEpisodePreview) - 提供了优雅的 Jellyfin 前端 UI 挂载思路与解决方案。
 
 ---
 
