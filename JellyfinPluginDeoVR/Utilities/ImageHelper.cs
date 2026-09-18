@@ -1,7 +1,7 @@
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 /// <summary>
 /// 提供用于选择和格式化项目图片的辅助方法。

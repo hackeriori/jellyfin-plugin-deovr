@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using DeoVRDeeplink.Configuration;
+using JellyfinPluginDeoVR.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
 using MediaBrowser.Controller.Configuration;
@@ -7,24 +7,24 @@ using MediaBrowser.Model.Plugins;
 using MediaBrowser.Model.Serialization;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink;
+namespace JellyfinPluginDeoVR;
 
 
-public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
+public partial class JellyfinPluginDeoVRPlugin : BasePlugin<PluginConfiguration>, IHasWebPages
 {
-    private readonly ILogger<DeoVrDeeplinkPlugin> _logger;
+    private readonly ILogger<JellyfinPluginDeoVRPlugin> _logger;
     private readonly IServerConfigurationManager _configurationManager;
     public static string ProxySecret { get; } = Guid.NewGuid().ToString("N");
-    public static DeoVrDeeplinkPlugin? Instance { get; private set; }
+    public static JellyfinPluginDeoVRPlugin? Instance { get; private set; }
     public override string Name => "JellyfinPluginDeoVR";
     public override Guid Id => Guid.Parse("62eb5b35-1c8c-4867-8c32-593217b512cb");
     public override string Description => "Jellyfin plugin to browse media and play VR videos directly in DeoVR.";
     
     
-    public DeoVrDeeplinkPlugin(
+    public JellyfinPluginDeoVRPlugin(
         IApplicationPaths applicationPaths,
         IXmlSerializer xmlSerializer,
-        ILogger<DeoVrDeeplinkPlugin> logger,
+        ILogger<JellyfinPluginDeoVRPlugin> logger,
         IServerConfigurationManager configurationManager)
         : base(applicationPaths, xmlSerializer)
     {
@@ -65,7 +65,7 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
         _logger.LogInformation("Injecting DeoVR client script in {IndexFile}...", indexFile);
 
         // 移除先前存在的脚本实例（以防文件发生变动）
-        indexContents = GetDeovrDeeplinkScriptRegex().Replace(indexContents, string.Empty);
+        indexContents = GetJellyfinPluginDeoVRScriptRegex().Replace(indexContents, string.Empty);
 
         var bodyClosing = indexContents.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
         if (bodyClosing == -1)
@@ -126,6 +126,6 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
         };
     }
 
-    [GeneratedRegex("<script plugin=\"(DeoVRDeeplink|JellyfinPluginDeoVR)\".*?></script>", RegexOptions.IgnoreCase)]
-    private static partial Regex GetDeovrDeeplinkScriptRegex();
+    [GeneratedRegex("<script plugin=\"JellyfinPluginDeoVR\".*?></script>", RegexOptions.IgnoreCase)]
+    private static partial Regex GetJellyfinPluginDeoVRScriptRegex();
 }

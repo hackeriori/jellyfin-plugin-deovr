@@ -6,18 +6,18 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <AssemblyVersion>4.0.0.0</AssemblyVersion>
+        <AssemblyVersion>12.1.0.0</AssemblyVersion>
         <LangVersion>13</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Jellyfin.Controller" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Data" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Database.Implementations" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Extensions" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Model" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Common" Version="12.0.0" />
-        <PackageReference Include="Jellyfin.Naming" Version="12.0.0" />
+        <PackageReference Include="Jellyfin.Controller" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Data" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Database.Implementations" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Extensions" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Model" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Common" Version="12.1.0" />
+        <PackageReference Include="Jellyfin.Naming" Version="12.1.0" />
     </ItemGroup>
 
     <ItemGroup>

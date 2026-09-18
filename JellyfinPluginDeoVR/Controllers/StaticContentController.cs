@@ -1,13 +1,13 @@
 using System.Net.Mime;
 using System.Reflection;
-using DeoVRDeeplink.Utilities;
+using JellyfinPluginDeoVR.Utilities;
 using MediaBrowser.Common.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.Api;
+namespace JellyfinPluginDeoVR.Controllers;
 
 [ApiController]
 [Route("deovr")]
@@ -17,7 +17,7 @@ public class StaticContentController : ControllerBase
     private readonly IApplicationPaths _appPaths;
     private readonly Assembly _assembly;
     private readonly string _clientScriptResourcePath =
-        $"{DeoVrDeeplinkPlugin.Instance?.GetType().Namespace}.Web.DeoVRClient.js";
+        $"{JellyfinPluginDeoVRPlugin.Instance?.GetType().Namespace}.Web.DeoVRClient.js";
     public StaticContentController(ILogger<StaticContentController> logger, IApplicationPaths appPaths)
     {
         _logger = logger;
@@ -52,7 +52,7 @@ public class StaticContentController : ControllerBase
     [AllowAnonymous]
     public IActionResult GetIcon()
     {
-        const string resourceName = "DeoVRDeeplink.Web.Icon.png";
+        const string resourceName = "JellyfinPluginDeoVR.Web.Icon.png";
         try
         {
             var stream = _assembly.GetManifestResourceStream(resourceName);

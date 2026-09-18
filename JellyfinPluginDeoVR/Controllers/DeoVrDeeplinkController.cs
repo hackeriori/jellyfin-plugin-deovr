@@ -1,6 +1,6 @@
 using System.Net.Mime;
-using DeoVRDeeplink.Configuration;
-using DeoVRDeeplink.Utilities;
+using JellyfinPluginDeoVR.Configuration;
+using JellyfinPluginDeoVR.Utilities;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.Api;
+namespace JellyfinPluginDeoVR.Controllers;
 
 [ApiController]
 [Route("deovr")]
@@ -78,7 +78,7 @@ public class DeoVrDeeplinkController(
 
     private LibraryConfiguration? GetLibraryConfigForItem(BaseItem item)
     {
-        var config = DeoVrDeeplinkPlugin.Instance!.Configuration;
+        var config = JellyfinPluginDeoVRPlugin.Instance!.Configuration;
         var libraries = config.Libraries;
         
         var collectionFolder = _libraryManager.GetCollectionFolders(item).FirstOrDefault();
@@ -124,7 +124,7 @@ public class DeoVrDeeplinkController(
         }
 
         // 验证签名
-        var proxySecret = DeoVrDeeplinkPlugin.ProxySecret;
+        var proxySecret = JellyfinPluginDeoVRPlugin.ProxySecret;
         if (!SignatureValidator.TryValidateSignature(movieId, mediaSourceId, expiry, signature, proxySecret, out var expectedSig))
         {
             _logger.LogWarning(

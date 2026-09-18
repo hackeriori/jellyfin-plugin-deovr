@@ -2,7 +2,7 @@ using MediaBrowser.Common.Net;
 using MediaBrowser.Controller.Configuration;
 using Microsoft.AspNetCore.Http;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 /// <summary>
 /// URL 相关操作的辅助类。

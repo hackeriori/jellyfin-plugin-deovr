@@ -1,5 +1,5 @@
-using DeoVRDeeplink.TimelinePreview;
 using Jellyfin.Data.Enums;
+using JellyfinPluginDeoVR.TimelinePreview;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -10,7 +10,7 @@ using MediaBrowser.Model.IO;
 using MediaBrowser.Model.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.ScheduledTasks;
+namespace JellyfinPluginDeoVR.ScheduledTasks;
 
 public class TimelineGenerationTask : IScheduledTask
 {
@@ -71,7 +71,7 @@ public class TimelineGenerationTask : IScheduledTask
     public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
     {
         var items = new List<Video>();
-        var configLibraries = DeoVrDeeplinkPlugin.Instance!.Configuration.Libraries;
+        var configLibraries = JellyfinPluginDeoVRPlugin.Instance!.Configuration.Libraries;
 
         // 获取已启用 TimelineImages 的媒体库
         var librariesToProcess = GetAllLibraries()

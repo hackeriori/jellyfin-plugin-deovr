@@ -1,10 +1,10 @@
 using System.Text.RegularExpressions;
-using DeoVRDeeplink.Configuration;
 using Jellyfin.Data.Enums;
+using JellyfinPluginDeoVR.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Model.Entities;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 /// <summary>
 /// 表示检测到的 DeoVR 播放格式。

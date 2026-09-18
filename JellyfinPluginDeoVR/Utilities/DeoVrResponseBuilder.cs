@@ -1,13 +1,13 @@
-using DeoVRDeeplink.Configuration;
-using DeoVRDeeplink.Model;
 using Jellyfin.Data.Enums;
+using JellyfinPluginDeoVR.Configuration;
+using JellyfinPluginDeoVR.Model;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Controller.Persistence;
 using MediaBrowser.Model.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 public static class DeoVrResponseBuilder
 {
@@ -64,7 +64,7 @@ public static class DeoVrResponseBuilder
         ILogger logger)
     {
         var runtimeSeconds = (int)((video.RunTimeTicks ?? 0) / TimeSpan.TicksPerSecond);
-        var proxySecret = DeoVrDeeplinkPlugin.ProxySecret;
+        var proxySecret = JellyfinPluginDeoVRPlugin.ProxySecret;
         var expiry = DateTimeOffset.UtcNow.AddSeconds(runtimeSeconds * 2).ToUnixTimeSeconds();
 
         var format = VideoFormatDetector.Detect(video, libConfig);

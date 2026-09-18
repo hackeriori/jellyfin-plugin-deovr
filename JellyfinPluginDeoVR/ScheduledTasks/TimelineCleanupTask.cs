@@ -1,5 +1,5 @@
-using DeoVRDeeplink.Configuration;
 using Jellyfin.Data.Enums;
+using JellyfinPluginDeoVR.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
 using MediaBrowser.Model.Tasks;
@@ -8,7 +8,7 @@ using MediaBrowser.Model.Globalization;
 using MediaBrowser.Model.IO;
 using MediaBrowser.Common.Configuration;
 
-namespace DeoVRDeeplink.ScheduledTasks;
+namespace JellyfinPluginDeoVR.ScheduledTasks;
 
 public class TimelineCleanupTask : IScheduledTask
 {
@@ -66,7 +66,7 @@ public class TimelineCleanupTask : IScheduledTask
                 return;
             }
             
-            var configLibraries = DeoVrDeeplinkPlugin.Instance?.Configuration?.Libraries;
+            var configLibraries = JellyfinPluginDeoVRPlugin.Instance?.Configuration?.Libraries;
             if (configLibraries == null)
             {
                 _logger.LogWarning("Plugin configuration not available, skipping cleanup");

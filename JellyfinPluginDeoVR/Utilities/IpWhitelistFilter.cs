@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Net.Sockets;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 public class IpWhitelistAttribute : TypeFilterAttribute
 {
@@ -33,7 +33,7 @@ public class IpWhitelistFilter : IAuthorizationFilter
             return;
         }
 
-        var config = DeoVrDeeplinkPlugin.Instance?.Configuration;
+        var config = JellyfinPluginDeoVRPlugin.Instance?.Configuration;
         if (config == null || !config.EnableIpRestriction || config.AllowedIpRanges == null || !config.AllowedIpRanges.Any())
         {
             // 若未启用 IP 限制或未配置 IP 地址范围，则允许所有访问

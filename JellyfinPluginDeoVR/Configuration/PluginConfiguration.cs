@@ -1,6 +1,6 @@
 using MediaBrowser.Model.Plugins;
 
-namespace DeoVRDeeplink.Configuration;
+namespace JellyfinPluginDeoVR.Configuration;
 
 /// <summary>VR 内容的投影类型。</summary>
 public enum ProjectionType

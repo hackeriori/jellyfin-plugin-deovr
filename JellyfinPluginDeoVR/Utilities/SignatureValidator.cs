@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DeoVRDeeplink.Utilities;
+namespace JellyfinPluginDeoVR.Utilities;
 
 /// <summary>
 /// 提供用于生成和验证视频流传输安全且具有有效期的 HMAC 签名的实用方法。

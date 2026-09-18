@@ -1,9 +1,9 @@
 using System.Net.Mime;
-using DeoVRDeeplink.Configuration;
-using DeoVRDeeplink.Model;
-using DeoVRDeeplink.Utilities;
 using Jellyfin.Data.Enums;
 using Jellyfin.Database.Implementations.Enums;
+using JellyfinPluginDeoVR.Configuration;
+using JellyfinPluginDeoVR.Model;
+using JellyfinPluginDeoVR.Utilities;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
 using MediaBrowser.Controller.Library;
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.Api;
+namespace JellyfinPluginDeoVR.Controllers;
 
 [ApiController]
 [Route("deovr")]
@@ -46,7 +46,7 @@ public class DeoVrController : ControllerBase
         try
         {
             var baseUrl = UrlHelper.GetServerUrl(_httpContextAccessor.HttpContext);
-            var configLibraries = DeoVrDeeplinkPlugin.Instance!.Configuration.Libraries;
+            var configLibraries = JellyfinPluginDeoVRPlugin.Instance!.Configuration.Libraries;
             var librariesWithConfig = GetEnabledLibrariesWithConfig(configLibraries).ToArray();
 
             if (librariesWithConfig.Length == 0)

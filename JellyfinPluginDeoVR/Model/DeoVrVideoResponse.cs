@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DeoVRDeeplink.Model;
+namespace JellyfinPluginDeoVR.Model;
 
 /// <summary>
 /// 表示包含 DeoVR 视频详细信息的响应。

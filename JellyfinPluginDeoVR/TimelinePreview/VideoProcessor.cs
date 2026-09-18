@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-using DeoVRDeeplink.Configuration;
-using DeoVRDeeplink.Utilities;
+using JellyfinPluginDeoVR.Configuration;
+using JellyfinPluginDeoVR.Utilities;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
 using MediaBrowser.Controller.Entities;
@@ -13,7 +13,7 @@ using MediaBrowser.Model.Entities;
 using MediaBrowser.Model.IO;
 using Microsoft.Extensions.Logging;
 
-namespace DeoVRDeeplink.TimelinePreview;
+namespace JellyfinPluginDeoVR.TimelinePreview;
 
 public class VideoProcessor
 {
@@ -46,7 +46,7 @@ public class VideoProcessor
         _appPaths = appPaths;
         _libraryMonitor = libraryMonitor;
         _libraryManager = libraryManager;
-        _config = DeoVrDeeplinkPlugin.Instance!.Configuration;
+        _config = JellyfinPluginDeoVRPlugin.Instance!.Configuration;
     }
 
     public async Task Run(Video item, CancellationToken cancellationToken)
@@ -202,7 +202,7 @@ public class VideoProcessor
 
     private LibraryConfiguration? GetLibraryConfigForItem(BaseItem item)
     {
-        var config = DeoVrDeeplinkPlugin.Instance!.Configuration;
+        var config = JellyfinPluginDeoVRPlugin.Instance!.Configuration;
         var libraries = config.Libraries;
 
         // 从 Jellyfin 获取包含该项目的媒体库文件夹（CollectionFolder）

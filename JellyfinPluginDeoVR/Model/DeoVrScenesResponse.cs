@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DeoVRDeeplink.Model;
+namespace JellyfinPluginDeoVR.Model;
 
 public class DeoVrScenesResponse
 {
