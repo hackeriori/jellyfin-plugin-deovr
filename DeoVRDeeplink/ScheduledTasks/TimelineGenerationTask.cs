@@ -1,4 +1,4 @@
-﻿using DeoVRDeeplink.TimelinePreview;
+using DeoVRDeeplink.TimelinePreview;
 using Jellyfin.Data.Enums;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Controller.Configuration;
@@ -73,7 +73,7 @@ public class TimelineGenerationTask : IScheduledTask
         var items = new List<Video>();
         var configLibraries = DeoVrDeeplinkPlugin.Instance!.Configuration.Libraries;
 
-        // Get libraries that have TimelineImages enabled
+        // 获取已启用 TimelineImages 的媒体库
         var librariesToProcess = GetAllLibraries()
             .Where(library =>
             {

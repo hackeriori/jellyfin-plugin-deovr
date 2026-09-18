@@ -1,4 +1,4 @@
-﻿using System.Net.Mime;
+using System.Net.Mime;
 using System.Reflection;
 using DeoVRDeeplink.Utilities;
 using MediaBrowser.Common.Configuration;
@@ -25,7 +25,7 @@ public class StaticContentController : ControllerBase
         _assembly = Assembly.GetExecutingAssembly();
     }
     
-    /// <summary>Serves embedded client JavaScript.</summary>
+    /// <summary>提供嵌入的客户端 JavaScript 脚本。</summary>
     [HttpGet("ClientScript")]
     [Produces("application/javascript")]
     [AllowAnonymous]
@@ -46,7 +46,7 @@ public class StaticContentController : ControllerBase
         }
     }
 
-    /// <summary>Serves the icon image.</summary>
+    /// <summary>提供图标图像。</summary>
     [HttpGet("Icon")]
     [Produces(MediaTypeNames.Image.Png)]
     [AllowAnonymous]
@@ -68,7 +68,7 @@ public class StaticContentController : ControllerBase
         }
     }
     
-    /// <summary> Return timeline images </summary>
+    /// <summary>返回时间轴缩略图。</summary>
     [HttpGet("timeline/{movieId}/4096_timelinePreview341x195.jpg")]
     [Produces(MediaTypeNames.Image.Jpeg)]
     [IpWhitelist]

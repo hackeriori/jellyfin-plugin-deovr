@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Http;
 namespace DeoVRDeeplink.Utilities;
 
 /// <summary>
-/// Helper class for URL-related operations.
+/// URL 相关操作的辅助类。
 /// </summary>
 public static class UrlHelper
 {
     /// <summary>
-    /// Gets the accessible server URL from the current HTTP context.
+    /// 从当前 HTTP 上下文获取可访问的服务器 URL。
     /// </summary>
-    /// <param name="context">The current HTTP context.</param>
-    /// <returns>The full server URL with scheme, host, and path base.</returns>
+    /// <param name="context">当前 HTTP 上下文。</param>
+    /// <returns>包含协议（Scheme）、主机（Host）和基础路径（PathBase）的完整服务器 URL。</returns>
     public static string GetServerUrl(HttpContext? context)
     {
         var req = context?.Request;
@@ -26,10 +26,10 @@ public static class UrlHelper
     }
     
     /// <summary>
-    /// Gets the internal Jellyfin base URL (used for local requests).
+    /// 获取 Jellyfin 内部基础 URL（用于本地内部请求）。
     /// </summary>
-    /// <param name="config">Server configuration manager.</param>
-    /// <returns>Internal base URL string.</returns>
+    /// <param name="config">服务器配置管理器。</param>
+    /// <returns>内部基础 URL 字符串。</returns>
     public static string GetInternalBaseUrl(IServerConfigurationManager config)
     {
         var options = config.GetNetworkConfiguration();

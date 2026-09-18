@@ -32,7 +32,7 @@ public class DeoVrDeeplinkController(
     private readonly IMediaSourceManager _mediaSourceManager = mediaSourceManager;
 
     /// <summary>
-    ///     Returns DeoVR compatible JSON for a movie or Person.
+    ///     返回与 DeoVR 兼容的电影或人物 JSON。
     /// </summary>
     [HttpGet("json/{Id}/response.json")]
     [Produces(MediaTypeNames.Application.Json)]
@@ -102,7 +102,7 @@ public class DeoVrDeeplinkController(
     }
 
     /// <summary>
-    ///     Securely proxies video streams with signed, expiring tokens.
+    ///     使用带签名的过期令牌安全代理视频流。
     /// </summary>
     [HttpGet("proxy/{movieId}/{mediaSourceId}/{expiry}/{signature}/stream.mp4")]
     [AllowAnonymous]
@@ -123,7 +123,7 @@ public class DeoVrDeeplinkController(
             return;
         }
 
-        // Validate signature
+        // 验证签名
         var proxySecret = DeoVrDeeplinkPlugin.ProxySecret;
         if (!SignatureValidator.TryValidateSignature(movieId, mediaSourceId, expiry, signature, proxySecret, out var expectedSig))
         {
@@ -143,7 +143,7 @@ public class DeoVrDeeplinkController(
         var httpClient = StaticHttpClient.Instance;
         var forwardRequest = new HttpRequestMessage(HttpMethod.Get, jellyfinUrl);
 
-        // Forward the Range header for seeking
+        // 转发 Range 请求头以支持播放定位/拖动进度
         if (Request.Headers.TryGetValue("Range", out var rangeValues))
             foreach (var value in rangeValues)
                 forwardRequest.Headers.TryAddWithoutValidation("Range", value);
@@ -153,18 +153,18 @@ public class DeoVrDeeplinkController(
 
         Response.StatusCode = (int)resp.StatusCode;
 
-        // Copy all headers from Jellyfin response to our response
+        // 将 Jellyfin 响应中的所有请求头复制到当前响应中
         foreach (var header in resp.Headers)
             Response.Headers[header.Key] = header.Value.ToArray();
         foreach (var header in resp.Content.Headers)
             Response.Headers[header.Key] = header.Value.ToArray();
 
-        // Remove headers that should not be set by user code
+        // 移除不应由用户代码设置的请求头
         Response.Headers.Remove("transfer-encoding");
 
-        // Proxy the content stream in large chunks for performance with cancellation support
+        // 以大块分片方式代理内容流以提升性能，并支持请求取消
         await using var stream = await resp.Content.ReadAsStreamAsync();
-        var buffer = new byte[2 * 1024 * 1024]; // 2 MB chunks
+        var buffer = new byte[2 * 1024 * 1024]; // 2 MB 分块大小
 
         try
         {
@@ -180,7 +180,7 @@ public class DeoVrDeeplinkController(
         catch (OperationCanceledException)
         {
             _logger.LogDebug("Client disconnected during streaming for movie {MovieId}", movieId);
-            // This is expected when client disconnects
+            // 客户端断开连接时属于正常情况
         }
     }
 }
@@ -189,7 +189,7 @@ public class StaticHttpClient
 {
     private static readonly Lazy<HttpClient> _instance = new(() => new HttpClient
     {
-        Timeout = Timeout.InfiniteTimeSpan, // No timeout for streaming
+        Timeout = Timeout.InfiniteTimeSpan, // 流媒体传输不设超时时间
         DefaultRequestHeaders = { ConnectionClose = false }
     });
 

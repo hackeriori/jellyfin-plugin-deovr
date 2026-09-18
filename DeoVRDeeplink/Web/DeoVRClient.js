@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name JellyfinPluginDeoVR Client
 // @version 3.1.2
-// @description Jellyfin plugin to browse media and play VR videos directly in DeoVR.
+// @description 在 Jellyfin 中浏览媒体并直接调用 DeoVR 播放 VR 视频的客户端脚本。
 // @run-at document-end
 // @author ChatGPT-4.1
 // ==/UserScript==
@@ -11,12 +11,12 @@
     const SCRIPT_VERSION = '3.1.2';
     console.log(`[DeoVR v${SCRIPT_VERSION}] [Hardened+Fixed] Initializing...`);
 
-    // --- Setup ---
+    // --- 初始化设置 ---
     const pluginBasePath = '/deovr';
     const iconUrl = `${pluginBasePath}/Icon`;
     const buttonClassName = 'deovrButton';
 
-    // --- Button creation ---
+    // --- 创建按钮 ---
     function buildDeeplinkUrl() {
         const hashParts = window.location.hash.split('?');
         const idFromUrl = (hashParts.length > 1)
@@ -53,7 +53,7 @@
         return deovrLink;
     }
 
-    // --- Injection logic ---
+    // --- 按钮注入逻辑 ---
     function ensureDeoVRButtonPresent(container) {
         if (!container) return;
         if (!window.location.hash.includes('/details')) return;
@@ -61,11 +61,11 @@
         const playBtn = container.querySelector('.btnPlay');
         let deovrBtn = container.querySelector('.' + buttonClassName);
 
-        // If correct placement, do nothing
+        // 若位置正确，则无需处理
         if (deovrBtn) {
             if (playBtn && playBtn.nextElementSibling === deovrBtn) return;
             if (!playBtn && container.lastElementChild === deovrBtn) return;
-            // Wrong position: remove so can re-add
+            // 位置不正确：先移除以便重新添加
             deovrBtn.remove();
         } else {
             deovrBtn = createDeoVRButton();
@@ -81,7 +81,7 @@
         document.querySelectorAll('.mainDetailButtons:not(.hide)').forEach(ensureDeoVRButtonPresent);
     }
 
-    // --- Mutation observer setup ---
+    // --- DOM 变动监听器（MutationObserver）设置 ---
     const observer = new MutationObserver(mutations => {
         let shouldRefresh = false;
         for (const m of mutations) {
@@ -116,7 +116,7 @@
     else
         window.addEventListener('DOMContentLoaded', safeStartup);
 
-    // Fallback/insurance: periodic check
+    // 后备兜底机制：定时周期性检查
     setInterval(reinjectButtonsEverywhere, 2000);
 
     console.log(`[DeoVR v${SCRIPT_VERSION}] Script active and resilient!`);

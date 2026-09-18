@@ -12,7 +12,7 @@ namespace DeoVRDeeplink.Utilities;
 public static class DeoVrResponseBuilder
 {
     /// <summary>
-    /// Builds a DeoVR response for an actor/person showing all their videos
+    /// 为演职人员/人物构建包含其所有视频的 DeoVR 响应。
     /// </summary>
     public static DeoVrScenesResponse BuildActorResponse(
         Person person, 
@@ -54,7 +54,7 @@ public static class DeoVrResponseBuilder
     }
 
     /// <summary>
-    /// Builds a DeoVR response for a video with all metadata and encodings
+    /// 为视频构建包含所有元数据及编码信息的 DeoVR 响应。
     /// </summary>
     public static DeoVrVideoResponse BuildVideoResponse(
         Video video, 
@@ -100,7 +100,7 @@ public static class DeoVrResponseBuilder
     }
 
     /// <summary>
-    /// Retrieves chapter timestamps, in seconds, for the item
+    /// 获取该项目的章节时间戳（以秒为单位）。
     /// </summary>
     private static List<DeoVrTimestamps> GetDeoVrTimestamps(
         BaseItem item,

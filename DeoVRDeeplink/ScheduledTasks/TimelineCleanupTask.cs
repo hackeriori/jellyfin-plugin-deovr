@@ -45,7 +45,7 @@ public class TimelineCleanupTask : IScheduledTask
             new TaskTriggerInfo
             {
                 Type = TaskTriggerInfoType.IntervalTrigger,
-                IntervalTicks = TimeSpan.FromDays(7).Ticks // Weekly cleanup by default
+                IntervalTicks = TimeSpan.FromDays(7).Ticks // 默认每周清理一次
             }
         ];
     }
@@ -74,11 +74,11 @@ public class TimelineCleanupTask : IScheduledTask
                 return;
             }
             
-            // Get all valid video items that should have timeline images
+            // 获取所有应当生成时间轴缩略图的有效视频项
             var validVideoIds = await GetValidVideoIdsAsync(configLibraries, cancellationToken);
             _logger.LogInformation("Found {Count} valid videos that should have timeline images", validVideoIds.Count);
 
-            // Get all timeline image files (.jpg files only)
+            // 获取所有时间轴图片文件（仅 .jpg 文件）
             var allImageFiles = _fileSystem.GetFiles(timelineImagesPath, false)
                 .Where(file => string.Equals(Path.GetExtension(file.FullName), ".jpg", StringComparison.OrdinalIgnoreCase))
                 .ToArray();
@@ -92,13 +92,13 @@ public class TimelineCleanupTask : IScheduledTask
                 return;
             }
 
-            // Analyze files to categorize them
+            // 分析文件并进行归类
             var (orphanedFiles, invalidFiles) = await AnalyzeImageFilesAsync(allImageFiles, validVideoIds, progress, cancellationToken);
 
             _logger.LogInformation("Found {OrphanedCount} orphaned and {InvalidCount} invalid timeline image files out of {TotalCount} total files", 
                 orphanedFiles.Count, invalidFiles.Count, allImageFiles.Length);
 
-            // Delete orphaned and invalid files
+            // 删除孤立与无效的文件
             var allFilesToDelete = orphanedFiles.Concat(invalidFiles).ToList();
             var (deletedCount, deletedSize, failedCount) = await DeleteFilesAsync(allFilesToDelete, progress, cancellationToken);
 
@@ -176,13 +176,13 @@ public class TimelineCleanupTask : IScheduledTask
                 }
 
                 processedFiles++;
-                var scanProgress = (double)processedFiles / allImageFiles.Length * 80; // Use 80% for scanning
+                var scanProgress = (double)processedFiles / allImageFiles.Length * 80; // 扫描过程占用 80% 进度
                 progress.Report(scanProgress);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Error processing timeline image file: {FilePath}", imageFile.FullName);
-                invalidFiles.Add(imageFile); // Treat as invalid if we can't process it
+                invalidFiles.Add(imageFile); // 若无法处理则视作无效文件
             }
         }
 
@@ -206,7 +206,7 @@ public class TimelineCleanupTask : IScheduledTask
                 var fileSize = fileToDelete.Length;
                 _fileSystem.DeleteFile(fileToDelete.FullName);
                 
-                // Only count size if deletion succeeded
+                // 仅在成功删除时累计释放空间大小
                 deletedSize += fileSize;
                 deletedCount++;
 
@@ -236,7 +236,7 @@ public class TimelineCleanupTask : IScheduledTask
     {
         try
         {
-            // Images are named {itemId}.jpg directly in the deovr-timeline folder
+            // 图片直接以 {itemId}.jpg 命名并保存在 deovr-timeline 文件夹中
             var fileName = Path.GetFileNameWithoutExtension(imagePath);
             
             if (Guid.TryParse(fileName, out var videoId))

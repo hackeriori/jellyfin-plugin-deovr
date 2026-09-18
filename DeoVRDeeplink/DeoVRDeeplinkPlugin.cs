@@ -32,7 +32,7 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
         _configurationManager = configurationManager ?? throw new ArgumentNullException(nameof(configurationManager));
         Instance = this;
 
-        // Consider calling PatchIndexHtml() in some OnEnable method instead
+        // 考虑改为在某个 OnEnable 方法中调用 PatchIndexHtml()
         TryPatchIndexHtml(applicationPaths);
     }
 
@@ -55,7 +55,7 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
         var basePath = GetBasePath() ?? string.Empty;
         var scriptElement = $"<script plugin=\"JellyfinPluginDeoVR\" src=\"{basePath}/deovr/ClientScript\"></script>";
 
-        // If already present, skip
+        // 如果已存在则跳过
         if (indexContents.Contains(scriptElement))
         {
             _logger.LogInformation("DeoVR client script is already present in {IndexFile}.", indexFile);
@@ -64,7 +64,7 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
 
         _logger.LogInformation("Injecting DeoVR client script in {IndexFile}...", indexFile);
 
-        // Remove any previous instances of the script (in case file changed)
+        // 移除先前存在的脚本实例（以防文件发生变动）
         indexContents = GetDeovrDeeplinkScriptRegex().Replace(indexContents, string.Empty);
 
         var bodyClosing = indexContents.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);

@@ -1,39 +1,39 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace DeoVRDeeplink.Utilities;
 
 /// <summary>
-/// Provides utility methods for generating and validating secure, time-limited HMAC signatures for video streaming.
+/// 提供用于生成和验证视频流传输安全且具有有效期的 HMAC 签名的实用方法。
 /// </summary>
 public static class SignatureValidator
 {
     /// <summary>
-    /// Generates the raw payload string used for signing by concatenating the source parameters.
+    /// 通过拼接源参数生成用于签名的原始载荷字符串。
     /// </summary>
     private static string GetSignaturePayload(object movieId, object mediaSourceId, long expiry) 
         => $"{movieId}:{mediaSourceId}:{expiry}";
 
     /// <summary>
-    /// Computes an HMAC-SHA256 hash of the provided data using the specified secret.
+    /// 使用指定的密钥计算提供数据的 HMAC-SHA256 哈希值。
     /// </summary>
     private static string SignUrl(string data, string secret) 
         => Convert.ToHexStringLower(HMACSHA256.HashData(Encoding.UTF8.GetBytes(secret), Encoding.UTF8.GetBytes(data)));
 
     /// <summary>
-    /// Generates a complete HMAC-SHA256 signature for a video stream request.
+    /// 为视频流请求生成完整的 HMAC-SHA256 签名。
     /// </summary>
     public static string GenerateSignature(object movieId, object mediaSourceId, long expiry, string secret) 
         => SignUrl(GetSignaturePayload(movieId, mediaSourceId, expiry), secret);
 
     /// <summary>
-    /// Determines whether a given Unix timestamp is in the past compared to the current UTC time.
+    /// 判断给定的 Unix 时间戳相比当前 UTC 时间是否已过期。
     /// </summary>
     public static bool IsExpired(long expiry) 
         => DateTimeOffset.UtcNow.ToUnixTimeSeconds() > expiry;
 
     /// <summary>
-    /// Validates a provided signature and outputs the expected signature for logging.
+    /// 验证传入的签名，并输出期望的签名以便于日志记录。
     /// </summary>
     public static bool TryValidateSignature(
         object movieId, 

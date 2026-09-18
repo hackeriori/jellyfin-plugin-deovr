@@ -1,122 +1,122 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DeoVRDeeplink.Model;
 
 /// <summary>
-/// Represents a response containing video details from DeoVR.
+/// 表示包含 DeoVR 视频详细信息的响应。
 /// </summary>
 public class DeoVrVideoResponse
 {
     /// <summary>
-    /// Gets or sets the list of available encodings for the video.
+    /// 获取或设置视频的可用编码列表。
     /// </summary>
     [JsonPropertyName("encodings")]
     public List<DeoVrEncoding> Encodings { get; set; } = [];
 
     /// <summary>
-    /// Gets or sets the title of the video.
+    /// 获取或设置视频标题。
     /// </summary>
     [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the identifier of the video.
+    /// 获取或设置视频标识符。
     /// </summary>
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the length of the video in seconds.
+    /// 获取或设置视频时长（以秒为单位）。
     /// </summary>
     [JsonPropertyName("videoLength")]
     public int VideoLength { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the video is 3D.
+    /// 获取或设置一个值，指示该视频是否为 3D。
     /// </summary>
     [JsonPropertyName("is3d")]
     public bool Is3D { get; set; }
 
     /// <summary>
-    /// Gets or sets the screen type of the video (e.g., flat, curved).
+    /// 获取或设置视频的屏幕类型（例如 flat、dome、sphere、fisheye 等）。
     /// </summary>
     [JsonPropertyName("screenType")]
     public string ScreenType { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the stereo mode of the video (e.g., "mono", "stereo").
+    /// 获取或设置视频的立体模式（例如 "off"、"sbs"、"tb" 等）。
     /// </summary>
     [JsonPropertyName("stereoMode")]
     public string StereoMode { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the URL of the video thumbnail image.
+    /// 获取或设置视频封面缩略图的 URL。
     /// </summary>
     [JsonPropertyName("thumbnailUrl")]
     public string ThumbnailUrl { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the URL of the timelinepreview image (Like Jellyfin trickplay)
+    /// 获取或设置时间轴预览拼图的 URL（类似于 Jellyfin Trickplay）。
     /// </summary>
     [JsonPropertyName("timelinePreview")]
     public string TimelinePreview { get; set; } = string.Empty;
     
      /// <summary>
-    /// Gets or sets the list of timestamps for the video.
+    /// 获取或设置视频的时间戳章节标记列表。
     /// </summary>
     [JsonPropertyName("timeStamps")]
     public List<DeoVrTimestamps> Timestamps { get; set; } = [];
 }
 
 /// <summary>
-/// Represents a specific encoding for a DeoVR video.
+/// 表示 DeoVR 视频的特定编码。
 /// </summary>
 public class DeoVrEncoding
 {
     /// <summary>
-    /// Gets or sets the name of the encoding (e.g., "1080p", "4K").
+    /// 获取或设置编码名称（例如 "1080p", "4K"）。
     /// </summary>
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the list of video sources for this encoding.
+    /// 获取或设置此编码下的视频源列表。
     /// </summary>
     [JsonPropertyName("videoSources")]
     public List<DeoVrVideoSource> VideoSources { get; set; } = [];
 }
 
 /// <summary>
-/// Represents a video source for a specific encoding.
+/// 表示特定编码的视频源。
 /// </summary>
 public class DeoVrVideoSource
 {
     /// <summary>
-    /// Gets or sets the resolution of the video source (e.g., 2160 for 2160p).
+    /// 获取或设置视频源的分辨率（例如 2160 代表 2160p）。
     /// </summary>
     [JsonPropertyName("resolution")]
     public int Resolution { get; set; }
 
     /// <summary>
-    /// Gets or sets the URL to the video source.
+    /// 获取或设置视频源的 URL。
     /// </summary>
     [JsonPropertyName("url")]
     public string Url { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// Represents a named timestamp within a DeoVR video.
+/// 表示 DeoVR 视频中带名称的时间戳章节标记。
 /// </summary>
 public class DeoVrTimestamps
 {
     /// <summary>
-    /// Gets or sets the timestamp in seconds.
+    /// 获取或设置时间戳（以秒为单位）。
     /// </summary>
     [JsonPropertyName("ts")]
     public int ts { get; set; }
 
     /// <summary>
-    /// Gets or sets the name or description of the timestamp.
+    /// 获取或设置时间戳的名称或描述。
     /// </summary>
     [JsonPropertyName("name")]
     public string? name { get; set; }

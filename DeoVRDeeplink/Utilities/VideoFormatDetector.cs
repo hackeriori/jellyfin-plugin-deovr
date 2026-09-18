@@ -7,101 +7,101 @@ using MediaBrowser.Model.Entities;
 namespace DeoVRDeeplink.Utilities;
 
 /// <summary>
-/// Represents the detected DeoVR playback format.
+/// 表示检测到的 DeoVR 播放格式。
 /// </summary>
-/// <param name="StereoMode">The stereo mode ('sbs', 'tb', 'cuv', or 'off').</param>
-/// <param name="ScreenType">The screen/projection type ('flat', 'dome', 'sphere', 'fisheye', 'mkx200').</param>
-/// <param name="Is3D">Whether stereoscopic 3D rendering should be enabled in DeoVR.</param>
+/// <param name="StereoMode">立体模式（'sbs', 'tb', 'cuv' 或 'off'）。</param>
+/// <param name="ScreenType">屏幕/投影类型（'flat', 'dome', 'sphere', 'fisheye', 'mkx200'）。</param>
+/// <param name="Is3D">DeoVR 中是否应启用立体 3D 渲染。</param>
 public readonly record struct VideoFormatInfo(string StereoMode, string ScreenType, bool Is3D);
 
 /// <summary>
-/// Detects video format (stereo mode, projection screen type, and 3D flag) for DeoVR playback.
-/// Prioritizes explicit metadata configuration, then filename conventions, Jellyfin 3D format, and library fallbacks.
+/// 检测用于 DeoVR 播放的视频格式（立体模式、投影屏幕类型和 3D 标识）。
+/// 优先级：显式元数据配置 > 文件名命名规范 > Jellyfin 3D 格式 > 媒体库后备设置。
 /// </summary>
 public static class VideoFormatDetector
 {
-    // Projection / screen type patterns
-    // 200-degree fisheye (MKX 200)
+    // 投影 / 屏幕类型匹配模式
+    // 200度鱼眼（MKX 200）
     private static readonly Regex RegexMkx200 = new(
         @"(?<![a-zA-Z0-9])(?:mkx200|fisheye200)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // 190-degree fisheye (Canon RF 5.2mm)
+    // 190度鱼眼（佳能 RF 5.2mm）
     // 注意：VR头显实测表明，DeoVR客户端对佳能RF52镜头视频若使用 "rf52" 投影类型会导致画面畸变/异常，必须使用 "fisheye" 投影网格渲染
     private static readonly Regex RegexRf52 = new(
         @"(?<![a-zA-Z0-9])(?:rf52|fisheye190)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // 180-degree / 220-degree fisheye
+    // 180度 / 220度鱼眼
     private static readonly Regex RegexFisheye = new(
         @"(?<![a-zA-Z0-9])(?:fisheye180|fisheye|vrca220)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // 180-degree equirectangular (VR180 / Dome)
-    // Note: Lookaround ensures we do not match resolutions like 1080p / 2160p or 180p, while supporting _180, Video180, LR_180, etc.
+    // 180度等距柱状投影（VR180 / 半球 Dome）
+    // 注意：环视断言确保不会误匹配 1080p / 2160p 或 180p 等分辨率，同时支持 _180、Video180、LR_180 等命名。
     private static readonly Regex Regex180 = new(
         @"(?<![a-zA-Z0-9])(?:vr180|180vr|lr[_\-\.\s]?180|180[_\-\.\s]?lr)(?![a-zA-Z0-9])|(?<!\d)180(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // 360-degree equirectangular (VR360 / Sphere)
-    // Note: Lookaround ensures we do not match resolutions like 360p or numbers like 1360, while supporting _360, Space360, etc.
+    // 360度等距柱状投影（VR360 / 全球 Sphere）
+    // 注意：环视断言确保不会误匹配 360p 等分辨率或 1360 等数字，同时支持 _360、Space360 等命名。
     private static readonly Regex Regex360 = new(
         @"(?<![a-zA-Z0-9])(?:vr360|360vr)(?![a-zA-Z0-9])|(?<!\d)360(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // Explicit flat screen indicator
+    // 显式平面屏幕标识
     private static readonly Regex RegexFlat = new(
         @"(?<![a-zA-Z0-9])(?:flat|flat3d|cinema)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // Stereo layout patterns
-    // Side-by-Side (SBS)
+    // 立体布局匹配模式
+    // 左右立体（Side-by-Side / SBS）
     private static readonly Regex RegexSbs = new(
         @"(?<![a-zA-Z0-9])(?:sbs|hsbs|fsbs|lr|3dh|sidebyside|side-by-side|half-sbs|full-sbs|lr[_\-\.\s]?180|180[_\-\.\s]?lr)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // Top-and-Bottom (TB / OverUnder)
+    // 上下立体（Top-and-Bottom / TB / OverUnder）
     private static readonly Regex RegexTb = new(
         @"(?<![a-zA-Z0-9])(?:tb|htab|ftab|ou|3dv|overunder|over-under|topbottom|top-bottom|half-ou|full-ou|half-tab|full-tab)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // Custom UV layout (Canon RF 5.2mm dual fisheye raw feed)
+    // 自定义 UV 布局（佳能 RF 5.2mm 双鱼眼原始画面）
     private static readonly Regex RegexCuv = new(
         @"(?<![a-zA-Z0-9])cuv(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // Monoscopic / 2D
+    // 单目 / 2D
     private static readonly Regex RegexMono = new(
         @"(?<![a-zA-Z0-9])(?:2d|mono|monoscopic)(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-    // General 3D indicator tag (e.g., '.3D.' in Jellyfin file naming convention)
+    // 通用 3D 标识标签（例如 Jellyfin 文件命名规范中的 '.3D.'）
     private static readonly Regex RegexGeneral3D = new(
         @"(?<![a-zA-Z0-9])3d(?![a-zA-Z0-9])",
         RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     /// <summary>
-    /// Detects the DeoVR format for a video item.
-    /// Priority order:
-    /// 1. Item-level tags (metadata in Jellyfin web UI or .nfo)
-    /// 2. Library-level forced settings (configured in plugin settings)
-    /// 3. Filename detection (DeoVR local naming &amp; Jellyfin 3D conventions)
-    /// 4. Jellyfin scanned Video3DFormat (defaults to flat cinema 3D)
-    /// 5. Library-level fallback settings
-    /// 6. Global default (flat 2D, mono off)
+    /// 检测视频项的 DeoVR 格式。
+    /// 优先级顺序：
+    /// 1. 项目级标签（Jellyfin Web 界面或 .nfo 元数据）
+    /// 2. 媒体库级强制设置（在插件设置中配置）
+    /// 3. 文件名检测（DeoVR 本地命名与 Jellyfin 3D 规范）
+    /// 4. Jellyfin 扫描的 Video3DFormat（默认为平面影院 3D）
+    /// 5. 媒体库级后备设置
+    /// 6. 全局默认值（平面 2D，关闭立体）
     /// </summary>
-    /// <param name="video">The Jellyfin video item.</param>
-    /// <param name="libConfig">The library configuration, if any.</param>
-    /// <returns>A <see cref="VideoFormatInfo"/> containing stereoMode, screenType, and is3D flag.</returns>
+    /// <param name="video">Jellyfin 视频项。</param>
+    /// <param name="libConfig">媒体库配置（如果有）。</param>
+    /// <returns>包含 stereoMode、screenType 和 is3D 标识的 <see cref="VideoFormatInfo"/>。</returns>
     public static VideoFormatInfo Detect(Video video, LibraryConfiguration? libConfig)
     {
         string? stereoMode = null;
         string? screenType = null;
 
-        // Level 1: Item-level explicit tags (Highest Priority - configuration override)
+        // 优先级 1：项目级显式标签（最高优先级 - 配置覆盖）
         DetectFromTags(video, ref stereoMode, ref screenType);
 
-        // Level 2: Library-level forced settings (if configured)
+        // 优先级 2：媒体库级强制设置（若已配置）
         if (libConfig != null)
         {
             if (screenType == null && libConfig.ForcedProjection != ProjectionType.None)
@@ -115,12 +115,12 @@ public static class VideoFormatDetector
             }
         }
 
-        // Level 3: Filename parsing (Primary automated convention)
+        // 优先级 3：文件名解析（主要自动化规范）
         var rawPath = video.Path ?? video.FileNameWithoutExtension ?? video.Name ?? string.Empty;
         var fileName = Path.GetFileNameWithoutExtension(rawPath.Replace('\\', '/'));
         DetectFromFileName(fileName, ref stereoMode, ref screenType);
 
-        // Level 4: Jellyfin scanned Video3DFormat
+        // 优先级 4：Jellyfin 扫描到的 Video3DFormat
         if (video.Video3DFormat.HasValue)
         {
             if (stereoMode == null)
@@ -133,11 +133,11 @@ public static class VideoFormatDetector
                 };
             }
 
-            // Traditional 3D movies (HSBS/FSBS Blu-rays) without VR tags are flat cinema screens
+            // 无 VR 标签的传统 3D 电影（左右半宽/全宽蓝光）属于平面影院屏幕
             screenType ??= "flat";
         }
 
-        // Level 5: Library fallback settings
+        // 优先级 5：媒体库后备设置
         if (libConfig != null)
         {
             if (screenType == null && libConfig.FallbackProjection != ProjectionType.None)
@@ -151,19 +151,19 @@ public static class VideoFormatDetector
             }
         }
 
-        // Level 6: Global defaults (Standard 2D flat video)
+        // 优先级 6：全局默认值（标准 2D 平面视频）
         stereoMode ??= "off";
         screenType ??= "flat";
 
-        // is3d should be true only when stereoscopic rendering is active
+        // 仅在立体渲染处于激活状态时 is3d 才为 true
         var is3d = stereoMode is "sbs" or "tb" or "cuv";
 
         return new VideoFormatInfo(stereoMode, screenType, is3d);
     }
 
     /// <summary>
-    /// Checks Jellyfin item tags for format overrides.
-    /// Supports tags like 'VR180', 'Fisheye', 'SBS', 'Flat', or namespaced tags like 'deovr:dome', 'deovr:sbs'.
+    /// 检查 Jellyfin 项目标签中的格式覆盖项。
+    /// 支持如 'VR180'、'Fisheye'、'SBS'、'Flat' 等标签，或带命名空间的标签如 'deovr:dome'、'deovr:sbs'。
     /// </summary>
     private static void DetectFromTags(Video video, ref string? stereoMode, ref string? screenType)
     {
@@ -180,7 +180,7 @@ public static class VideoFormatDetector
                 tag = tag[6..].Trim();
             }
 
-            // Screen / Projection tags
+            // 屏幕 / 投影标签
             if (screenType == null)
             {
                 screenType = tag.ToLowerInvariant() switch
@@ -195,7 +195,7 @@ public static class VideoFormatDetector
                 };
             }
 
-            // Stereo mode tags
+            // 立体模式标签
             if (stereoMode == null)
             {
                 stereoMode = tag.ToLowerInvariant() switch
@@ -211,8 +211,8 @@ public static class VideoFormatDetector
     }
 
     /// <summary>
-    /// Parses the filename for DeoVR projection and stereo tags.
-    /// Complies with DeoVR documentation section 10 and Jellyfin 3D naming conventions.
+    /// 从文件名中解析 DeoVR 投影和立体模式标签。
+    /// 符合 DeoVR 官方文档第 10 节规范及 Jellyfin 3D 文件命名约定。
     /// </summary>
     private static void DetectFromFileName(string fileName, ref string? stereoMode, ref string? screenType)
     {
@@ -221,7 +221,7 @@ public static class VideoFormatDetector
             return;
         }
 
-        // Screen type detection from filename
+        // 从文件名检测屏幕类型
         if (screenType == null)
         {
             if (RegexMkx200.IsMatch(fileName))
@@ -252,7 +252,7 @@ public static class VideoFormatDetector
             }
         }
 
-        // Stereo mode detection from filename
+        // 从文件名检测立体模式
         if (stereoMode == null)
         {
             if (RegexSbs.IsMatch(fileName))
@@ -273,12 +273,12 @@ public static class VideoFormatDetector
             }
         }
 
-        // If filename specifies 3D layout (e.g. '.3D.hsbs') but no VR projection tag,
-        // it is a traditional flat 3D cinema screen.
+        // 若文件名指定了 3D 布局（例如 '.3D.hsbs'）但未指定 VR 投影标签，
+        // 则视为传统的平面 3D 影院屏幕。
         if (screenType == null && (RegexGeneral3D.IsMatch(fileName) || stereoMode is "sbs" or "tb"))
         {
-            // If the filename contains 3D format tags without any VR projection mesh,
-            // default to flat projection to avoid warping cinema 3D movies into a dome/sphere.
+            // 若文件名包含 3D 格式标签但没有任何 VR 投影网格，
+            // 则默认为平面投影，避免将影院 3D 电影扭曲为半球/全球投影。
             if (RegexGeneral3D.IsMatch(fileName))
             {
                 screenType = "flat";
@@ -288,12 +288,12 @@ public static class VideoFormatDetector
 }
 
 /// <summary>
-/// Helper for converting configuration enums to DeoVR protocol string values.
+/// 用于将配置枚举转换为 DeoVR 协议字符串值的辅助类。
 /// </summary>
 public static class FormatMappingHelper
 {
     /// <summary>
-    /// Converts a <see cref="ProjectionType"/> to DeoVR screenType.
+    /// 将 <see cref="ProjectionType"/> 转换为 DeoVR 的 screenType。
     /// </summary>
     public static string? ToScreenType(ProjectionType projection) => projection switch
     {
@@ -308,7 +308,7 @@ public static class FormatMappingHelper
     };
 
     /// <summary>
-    /// Converts a <see cref="StereoMode"/> to DeoVR stereoMode.
+    /// 将 <see cref="StereoMode"/> 转换为 DeoVR 的 stereoMode。
     /// </summary>
     public static string? ToStereoMode(StereoMode stereo) => stereo switch
     {

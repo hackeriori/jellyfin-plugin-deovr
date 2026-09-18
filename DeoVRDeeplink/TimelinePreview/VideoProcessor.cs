@@ -71,7 +71,7 @@ public class VideoProcessor
             var outputPath = GetTimelineOutputPath(item);
             var ffmpegArgs = GetFFmpegArgumentsForTimeline(item, mediaSource, outputPath);
 
-            // Check if timeline already exists and is up to date
+            // 检查时间轴缩略图是否已存在且为最新
             if (IsTimelineUpToDate(outputPath, mediaSource.Path))
             {
                 _logger.LogDebug("Timeline image already exists and is up to date for {ItemName}", item.Name);
@@ -133,7 +133,7 @@ public class VideoProcessor
     {
         var argString = string.Join(" ", args);
 
-        // Log the complete FFmpeg command
+        // 记录完整的 FFmpeg 命令
         var fullCommand = $"{_mediaEncoder.EncoderPath} {argString}";
         _logger.LogDebug("Executing FFmpeg command: {FullCommand}", fullCommand);
 
@@ -205,7 +205,7 @@ public class VideoProcessor
         var config = DeoVrDeeplinkPlugin.Instance!.Configuration;
         var libraries = config.Libraries;
 
-        // Jellyfin gives you the containing library (CollectionFolder)
+        // 从 Jellyfin 获取包含该项目的媒体库文件夹（CollectionFolder）
         var collectionFolder = _libraryManager.GetCollectionFolders(item).FirstOrDefault();
         if (collectionFolder == null)
         {
@@ -213,7 +213,7 @@ public class VideoProcessor
             return null;
         }
 
-        // Match your plugin’s configured libraries by GUID
+        // 根据 GUID 匹配插件中配置的媒体库
         var lib = libraries.FirstOrDefault(l => l.Id == collectionFolder.Id);
         if (lib != null)
         {
@@ -229,16 +229,16 @@ public class VideoProcessor
 
     private static bool EnableForItem(BaseItem item)
     {
-        // Check if item is a video
+        // 检查该项目是否为视频
         if (item is not Video) return false;
 
-        // Check if item has a valid path
+        // 检查项目路径是否有效
         if (string.IsNullOrEmpty(item.Path)) return false;
 
-        // Check if file exists
+        // 检查文件是否存在
         if (!File.Exists(item.Path)) return false;
 
-        // Add any other checks here if needed
+        // 如有需要，在此处添加其他检查
         return true;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Net.Mime;
+using System.Net.Mime;
 using DeoVRDeeplink.Configuration;
 using DeoVRDeeplink.Model;
 using DeoVRDeeplink.Utilities;
@@ -36,7 +36,7 @@ public class DeoVrController : ControllerBase
     }
     
     /// <summary>
-    ///     Returns a JSON structure compatible with DeoVR deeplinks
+    ///     返回与 DeoVR 深度链接兼容的 JSON 结构。
     /// </summary>
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
@@ -58,7 +58,7 @@ public class DeoVrController : ControllerBase
             var response = new DeoVrScenesResponse();
             var totalVideosCount = 0;
 
-            // Process libraries in parallel for better performance
+            // 并行处理媒体库以提升性能
             var sceneTasks = librariesWithConfig.Select(async libraryWithConfig =>
             {
                 var (library, config) = libraryWithConfig;
@@ -143,7 +143,7 @@ public class DeoVrController : ControllerBase
         };
     
         var items = _libraryManager.GetItemList(query);
-        return await Task.FromResult( // Deduplicate by ID - Jellyfin 10.11.0 bug?
+        return await Task.FromResult( // 根据 ID 去重 - 避开 Jellyfin 10.11.0 的已知重复项问题？
             items.OfType<Video>()
             .GroupBy(v => v.Id)
             .Select(g => g.First())
