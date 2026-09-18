@@ -138,7 +138,7 @@ public class DeoVrDeeplinkController(
         
         var jellyfinInternalBaseUrl = UrlHelper.GetInternalBaseUrl(_config);
         var jellyfinUrl =
-            $"{jellyfinInternalBaseUrl}/Videos/{movieId}/stream.mp4?Static=true&mediaSourceId={mediaSourceId}&deviceId=DeoVRDeeplink";
+            $"{jellyfinInternalBaseUrl}/Videos/{movieId}/stream.mp4?Static=true&mediaSourceId={mediaSourceId}&deviceId=JellyfinPluginDeoVR";
 
         var httpClient = StaticHttpClient.Instance;
         var forwardRequest = new HttpRequestMessage(HttpMethod.Get, jellyfinUrl);

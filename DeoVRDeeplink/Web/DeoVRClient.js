@@ -1,7 +1,7 @@
-﻿// ==UserScript==
-// @name DeoVR Deeplink Client (Jellyfin Hardened, Fixed)
+// ==UserScript==
+// @name JellyfinPluginDeoVR Client
 // @version 3.1.2
-// @description Adds DeoVR button to Jellyfin movie details, resilient to SPA redraws and avoids unnecessary icon reloads
+// @description Jellyfin plugin to browse media and play VR videos directly in DeoVR.
 // @run-at document-end
 // @author ChatGPT-4.1
 // ==/UserScript==

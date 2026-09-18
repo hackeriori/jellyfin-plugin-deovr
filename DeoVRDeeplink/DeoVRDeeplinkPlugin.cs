@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using DeoVRDeeplink.Configuration;
 using MediaBrowser.Common.Configuration;
 using MediaBrowser.Common.Plugins;
@@ -16,9 +16,9 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
     private readonly IServerConfigurationManager _configurationManager;
     public static string ProxySecret { get; } = Guid.NewGuid().ToString("N");
     public static DeoVrDeeplinkPlugin? Instance { get; private set; }
-    public override string Name => "DeoVRDeeplink";
-    public override Guid Id => Guid.Parse("e7bea589-e339-490c-8738-596e42b9042e");
-    public override string Description => "Adds deeplink support for DeoVR player";
+    public override string Name => "JellyfinPluginDeoVR";
+    public override Guid Id => Guid.Parse("62eb5b35-1c8c-4867-8c32-593217b512cb");
+    public override string Description => "Jellyfin plugin to browse media and play VR videos directly in DeoVR.";
     
     
     public DeoVrDeeplinkPlugin(
@@ -53,7 +53,7 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
 
         var indexContents = File.ReadAllText(indexFile);
         var basePath = GetBasePath() ?? string.Empty;
-        var scriptElement = $"<script plugin=\"DeoVRDeeplink\" src=\"{basePath}/deovr/ClientScript\"></script>";
+        var scriptElement = $"<script plugin=\"JellyfinPluginDeoVR\" src=\"{basePath}/deovr/ClientScript\"></script>";
 
         // If already present, skip
         if (indexContents.Contains(scriptElement))
@@ -119,13 +119,13 @@ public partial class DeoVrDeeplinkPlugin : BasePlugin<PluginConfiguration>, IHas
     {
         yield return new PluginPageInfo
         {
-            Name = "DeoVRDeeplink",
-            DisplayName = "DeoVR Deeplink",
+            Name = "JellyfinPluginDeoVR",
+            DisplayName = "JellyfinPluginDeoVR",
             EnableInMainMenu = true,
             EmbeddedResourcePath = $"{GetType().Namespace}.Configuration.configPage.html"
         };
     }
 
-    [GeneratedRegex("<script plugin=\"DeoVRDeeplink\".*?></script>", RegexOptions.IgnoreCase)]
+    [GeneratedRegex("<script plugin=\"(DeoVRDeeplink|JellyfinPluginDeoVR)\".*?></script>", RegexOptions.IgnoreCase)]
     private static partial Regex GetDeovrDeeplinkScriptRegex();
 }
